@@ -16,9 +16,18 @@ function generateColorScheme(num, h_step, s, l) {
 	return colors;
 }
 
-function update() {
-	var color_scheme = generateColorScheme(100, 71, 0.8, 0.7);
+function updateText(color_scheme) {
+	var textarea = d3.select("#colors_text")[0][0];
+	var color_codes = [];
 
+	color_scheme.forEach(function(hsv) {
+		color_codes.push(hsv.toString());
+	});
+	textarea.value = JSON.stringify(color_codes);
+	console.log(textarea);
+}
+
+function updateSVG(color_scheme) {
 	var svg = d3.select("#svg_canvas");
 
 	var rect_size = 50;
@@ -35,6 +44,12 @@ function update() {
 		.attr("height", rect_size)
 		.style("stroke", "#ffffff")
 		.style("fill", function(d) { return d.toString(); });
+}
+
+function update() {
+	var color_scheme = generateColorScheme(64, 71, 0.8, 0.7);
+	updateText(color_scheme);
+	updateSVG(color_scheme);
 }
 
 function init() {
