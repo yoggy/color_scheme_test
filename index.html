@@ -4,19 +4,30 @@
 	<title>color_scheme_test</title>
 	<meta charset="UTF-8">
 
+	<!-- bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
 	<!-- D3.js -->
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.5/d3.js"></script>
 
 	<script type="text/javascript" src="color_scheme_test.js"></script>
+
 </head>
 <body onLoad="init()">
-	<h1>color_scheme_test</h1>
-	<hr>
-	<div>
-		<svg id="svg_canvas" width="400" height="400"></svg>
-	</div>
-	<div>
-		<textarea id="colors_text" cols="80" rows="20"></textarea>
+	<div class="container">
+		<div class="page-header">
+			<h1>color_scheme_test</h1>
+		</div>
+		<div class="row">
+			<div class="col-md-6">
+				<svg id="svg_canvas" width="400" height="400"></svg>
+			</div>
+			<div class="col-md-6">
+				<textarea id="colors_text" cols="60" rows="20"></textarea>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
