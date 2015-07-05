@@ -124,7 +124,7 @@ function createSliderH(id, min_val, max_val, init_val, is_int, updateHandler) {
 
 function setupGUI() {
 	createSliderH("#svg_slider_div_num", 1, 64, 64, true,  onSliderDivNum);
-	createSliderH("#svg_slider_div_step", 1, 180, 71, true, onSliderDivStep);
+	createSliderH("#svg_slider_div_step", 1, 200, 71, true, onSliderDivStep);
 }
 
 function init() {
