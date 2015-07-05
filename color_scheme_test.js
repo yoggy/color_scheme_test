@@ -107,9 +107,11 @@ function createSliderH(id, min_val, max_val, init_val, is_int, updateHandler) {
 				        .attr("cx", d.x = Math.max(0, Math.min(w, d3.event.x)))
 				        .attr("cy", d.y = 0);
 				    drag_handler(d.x);
+				    d3.select("body").style("cursor", "move");
 	            })
 	            .on('dragend', function(d) {
 				    drag_handler(d.x);
+				    d3.select("body").style("cursor", "auto");
 	            });
 
 	var circle = g.append("circle")
