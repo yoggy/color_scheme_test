@@ -1,7 +1,10 @@
 var div_num =  64;
 var div_step = 71;
+var color_s = 0.8;
+var color_l = 0.7;
+var color_l_step = 0.05;
 
-function generateColorScheme(num, h_step, s, l) {
+function generateColorScheme(num, h_step, s, l, l_step) {
 	colors = [];
 
 	var h = 0;
@@ -14,8 +17,9 @@ function generateColorScheme(num, h_step, s, l) {
 		h += h_step;
 		if (h >= 360) {
 			h -= 360;
-			l -= 0.05;
-			if (l < 0.1) l = init_l;
+			l -= l_step;
+			if (l < 0.1) l = 0.9;
+			if (l > 0.9) l = 0.1;
 		}
 	}
 	return colors;
@@ -29,7 +33,6 @@ function updateText(color_scheme) {
 		color_codes.push(hsv.toString());
 	});
 	textarea.value = JSON.stringify(color_codes);
-	console.log(textarea);
 }
 
 function updateSVG(color_scheme) {
@@ -52,7 +55,7 @@ function updateSVG(color_scheme) {
 }
 
 function update() {
-	var color_scheme = generateColorScheme(div_num, div_step, 0.8, 0.7);
+	var color_scheme = generateColorScheme(div_num, div_step, color_s, color_l, color_l_step);
 	updateText(color_scheme);
 	updateSVG(color_scheme);
 }
@@ -67,24 +70,48 @@ function onSliderDivStep(val) {
 	update();
 }
 
-function createSliderH(id, min_val, max_val, init_val, is_int, updateHandler) {
+function onSliderColorS(val) {
+	color_s = val;
+	update();
+}
+
+function onSliderColorL(val) {
+	color_l = val;
+	update();
+}
+
+function onSliderColorLStep(val) {
+	color_l_step = val;
+	update();
+}
+
+function createSliderH(id, min_val, max_val, init_val, floating_point_quantize_decimal_place, updateHandler) {
 	var w = 200;
 	var h = 20;
 	var offset_w = 20;
-	var offset_h = 20;
+	var offset_h = 10;
+	var text_w = 80;
 
-	var svg = d3.select(id).attr("width", w + offset_w * 2).attr("height", h);
+	var svg = d3.select(id).attr("width", w + offset_w * 2 + text_w).attr("height", h);
 
 	var pos2val = d3.scale.linear().domain([0, w]).range([min_val, max_val]);
 	var val2pos = d3.scale.linear().domain([min_val, max_val]).range([0, w]);
 
-	var g = svg.selectAll('g')
+	var val_text = svg.append('g')
+                .attr('transform', 'translate('+(w + offset_w * 2)+', '+offset_h+')')
+                .append('text')
+                .attr('x', text_w/2)
+                .style('font-size', 12)
+                .style('text-anchor', 'end')
+                .text('aaa');
+
+	var g = svg.append('g').selectAll('g')
             .data([{x: val2pos(init_val), y : 0}])
             .enter()
                 .append('g')
                 .attr("height", h)
                 .attr("width", w)
-                .attr('transform', 'translate(20, 10)');
+                .attr('transform', 'translate('+offset_w+', '+offset_h+')');
 
 	var rect = g
                 .append('rect')
@@ -95,10 +122,15 @@ function createSliderH(id, min_val, max_val, init_val, is_int, updateHandler) {
 
     function drag_handler(pos) {
 	    var val = pos2val(pos);
-	    if (is_int == true) {
-		    val = Math.round(val);
+	    if (floating_point_quantize_decimal_place == 0) {
+	    	val = Math.round(val);
+	    }
+	    else {
+		    var n = Math.pow(10, floating_point_quantize_decimal_place);
+		    val = Math.round(val * n) / n;
 	    }
 	    updateHandler(val);
+	    val_text.text(val);
     }
 
 	var drag = d3.behavior.drag()
@@ -122,11 +154,15 @@ function createSliderH(id, min_val, max_val, init_val, is_int, updateHandler) {
 	    .call(drag);
 
 	updateHandler(init_val);
+    val_text.text(init_val);
 }
 
 function setupGUI() {
-	createSliderH("#svg_slider_div_num", 1, 64, 64, true,  onSliderDivNum);
-	createSliderH("#svg_slider_div_step", 1, 200, 71, true, onSliderDivStep);
+	createSliderH("#svg_slider_div_num", 1, 64, 64, 0,  onSliderDivNum);
+	createSliderH("#svg_slider_div_step", 1, 200, 71, 0, onSliderDivStep);
+	createSliderH("#svg_slider_color_s", 0.0, 1.0, color_s, 2, onSliderColorS);
+	createSliderH("#svg_slider_color_l", 0.0, 1.0, color_l, 2, onSliderColorL);
+	createSliderH("#svg_slider_color_l_step", 0.0, 0.2, color_l_step, 2, onSliderColorLStep);
 }
 
 function init() {
